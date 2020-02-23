@@ -1,11 +1,13 @@
 import { todosRef } from "../firebase";
 import * as types from "../actions/actionTypes";
 
+
 export const addToDo = newToDo => async dispatch => {
   todosRef.push().set(newToDo);
 };
 export const completeToDo = todoId => async dispatch => {
   todosRef.child(todoId).remove();
+  
   dispatch({
     type: types.COMPLETE_TODOS,
     payload: null

@@ -1,0 +1,13 @@
+POST https://fcm.googleapis.com/fcm/send
+content-type: application/json
+Authorization: key=AAAAyePdOm4:APA91bGvc3fzrIrmvn5UOeuTktyNDKv6VDLn6J8yFs9KEmxcAw2hH78BhYMyyc_zlEDpFQBAFGsS8WPv4vLLVNxpPLq2iwlxnWhJiQImXdPDuYeXVA4x2EI9uIRxMy_HM5g09zO4A4No
+
+{
+    "notification": {
+        "title": "Firebase",
+        "body": "Firebase is awesome",
+        "click_action": "http://localhost:3000/",
+        "icon": ""
+    },
+    "to": "dV6CL5hvAhpH9nXDlySW-f:APA91bHTkCOvCoc-LrvdDwcaUBb5219mtru0aSHvbcMNslMwIuAzQgHeO3t68WIkZpMg3rdRlv-t3O6NF1RkF-0Hlkli_eBnpjZawekSG9jkIidbpaO0utXgUFxHlY4yeQJhDkEH4dQQ"
+}

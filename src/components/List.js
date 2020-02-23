@@ -1,8 +1,11 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import _ from 'lodash';
-import * as actions from '../actions';
-import ListItem from './ListItem';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import _ from "lodash";
+import * as actions from "../actions";
+import ListItem from "./ListItem";
+import { firebase } from "../firebase";
+
+import "./List.css";
 
 class List extends Component {
   state = {
@@ -11,32 +14,34 @@ class List extends Component {
   };
 
   inputChange = e => {
-    this.setState({formValue: e.target.value});
+    this.setState({ formValue: e.target.value });
   };
 
   formSubmit = e => {
-    const {formValue} = this.state;
-    const {addToDo} = this.props;
+    const { formValue } = this.state;
+    const { addToDo } = this.props;
     e.preventDefault();
-    addToDo({title: formValue});
-    this.setState({formValue: ""});
+    addToDo({ title: formValue });
+    this.setState({ formValue: "" });
   };
 
   renderForm = () => {
-    const {showForm, formValue} = this.state;
+    const { showForm, formValue } = this.state;
     if (showForm) {
       return (
         <div>
           <form onSubmit={this.formSubmit}>
             <div>
-              <i>add</i>
-              <input 
+              <span style={{ paddingRight: 5 }}>add</span>
+              <input
                 value={formValue}
                 onChange={this.inputChange}
                 id="toDoNext"
                 type="text"
               />
-              <label htmlFor="toDoNext">What Next?</label>
+              <label style={{ paddingLeft: 5 }} htmlFor="toDoNext">
+                What Next?
+              </label>
             </div>
           </form>
         </div>
@@ -44,7 +49,7 @@ class List extends Component {
     }
   };
   renderToDo() {
-    const {data} = this.props;
+    const { data } = this.props;
     const toDos = _.map(data, (value, key) => {
       return <ListItem key={key} todoId={key} todo={value} />;
     });
@@ -60,8 +65,22 @@ class List extends Component {
   componentWillMount() {
     this.props.fetchToDos();
   }
+
+  askForPermissioToReceiveNotifications = async () => {
+    try {
+      const messaging = firebase.messaging();
+      await messaging.requestPermission();
+      const token = await messaging.getToken();
+      console.log("token do usuário:", token);
+
+      return token;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   render() {
-    const {showForm} = this.state;
+    const { showForm } = this.state;
     return (
       <div>
         <div>
@@ -69,24 +88,33 @@ class List extends Component {
           {this.renderToDo()}
         </div>
         <div>
-          <button onClick={() => this.setState({showForm: !showForm})}>
-          {showForm ? (
-            <i>Close</i>
-          ) : (
-            <i>Add</i>
-          )}
+          <button
+            className="button"
+            onClick={() => this.setState({ showForm: !showForm })}
+          >
+            {showForm ? "Close" : "Add"}
           </button>
         </div>
+        <br />
+        <button
+          className="button"
+          onClick={() => this.askForPermissioToReceiveNotifications()}
+        >
+          Click here to receive notification
+        </button>
       </div>
     );
   }
 }
 
-const mapStateToProps = ({data}) => {
+const mapStateToProps = ({ data }) => {
   console.log(data);
   return {
     data
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps, actions)(List);
+export default connect(
+  mapStateToProps,
+  actions
+)(List);
